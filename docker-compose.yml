@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  master:
+    build: .
+    container_name: mpi_master
+    hostname: master
+    ports:
+      - "2222:22"
+    volumes:
+      - ./:/app
+    networks:
+      mpi_network:
+        ipv4_address: 172.28.1.1
+
+  worker1:
+    build: .
+    container_name: mpi_worker1
+    hostname: worker1
+    volumes:
+      - ./:/app
+    networks:
+      mpi_network:
+        ipv4_address: 172.28.1.2
+    depends_on:
+      - master
+
+  worker2:
+    build: .
+    container_name: mpi_worker2
+    hostname: worker2
+    volumes:
+      - ./:/app
+    networks:
+      mpi_network:
+        ipv4_address: 172.28.1.3
+    depends_on:
+      - master
+
+  worker3:
+    build: .
+    container_name: mpi_worker3
+    hostname: worker3
+    volumes:
+      - ./:/app
+    networks:
+      mpi_network:
+        ipv4_address: 172.28.1.4
+    depends_on:
+      - master
+
+networks:
+  mpi_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
